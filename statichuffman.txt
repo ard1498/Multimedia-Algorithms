@@ -1,0 +1,77 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+struct Node {
+	int val;
+	int freq;
+	Node *left,*right;
+	
+	Node(int key,int f){
+		val = key;
+		freq =  f;
+		left = NULL;
+		right = NULL;
+	}
+};
+
+struct compare{
+    bool operator()(Node* a,Node* b){
+	    return a->freq > b->freq;
+    }
+};
+
+void printcode(Node* N,string output,int sent){
+    if(N == NULL){
+        return;
+    }
+    if(N->val != sent){
+        cout<<N->val<<":"<<output<<endl;
+    }
+    printcode(N->left,output+'0',sent);
+    printcode(N->right,output+'1',sent);
+}
+
+int main(){
+	int n,val,freq;
+	vector<int> gnodes;
+    cin>>n;
+	priority_queue<Node*,vector<Node*>,compare> nodes;
+	for(int i = 0;i < n;i++){
+		cin>>val>>freq;
+		gnodes.push_back(val);
+		nodes.push(new Node(val,freq));	
+	}
+	
+	Node *n1,*n2;
+	
+    //cout<<"\nnodes size:"<<nodes.size()<<": nodes .top :"<<nodes.top()->val<<"\n";
+	while(nodes.size() != 1){
+		n1 = nodes.top();
+		nodes.pop();
+		n2 = nodes.top();
+		nodes.pop();
+		
+		int nf = n1->freq + n2->freq;
+		Node* root = new Node(n+100,nf);
+		root->left = n1;
+		root->right = n2;
+		
+		nodes.push(root);
+	}
+    //cout<<"\nnodes size:"<<nodes.size()<<":nodes top : "<<nodes.top()->val<<"\n";
+
+    
+	Node* root = nodes.top();
+    /*
+	for(int i = 0;i < gnodes.size();i++){
+		vector<int> codei;
+		codes(root,gnodes[i],codei);
+		for(int j = 0;j < codei.size();j++){
+			cout<<codei[j];
+		}
+		cout<<"\n";
+	}
+	*/
+    printcode(root,"",n+100);
+	return 0;
+}
